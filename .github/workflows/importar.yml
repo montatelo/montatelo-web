@@ -1,0 +1,20 @@
+name: Importar web
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copiar la web publicada
+        run: |
+          for f in index.html apple-touch-icon.png favicon.ico icon-192.png icon-512.png og.jpg robots.txt site.webmanifest sitemap.xml; do
+            curl -fsSL -o "$f" "https://montatelo.com/$f"
+          done
+          ls -la
+          echo montatelo.com > CNAME
+          touch .nojekyll
+          git config user.name robot && git config user.email robot@users.noreply.github.com
+          git add -A && git commit -m "Importar web desde Netlify" && git push
